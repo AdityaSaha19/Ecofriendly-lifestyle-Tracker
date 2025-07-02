@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Eco-Friendly Tracker 🌿</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+            transition: 0.3s;
+            color: #333;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #28a745;
+        }
+
+        .settings-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toggle-switch::before {
+            content: "";
+            width: 18px;
+            height: 18px;
+            background: white;
+            position: absolute;
+            top: 1px;
+            left: 2px;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle-on {
+            background: #28a745;
+        }
+
+        .toggle-on::before {
+            left: 20px;
+        }
+
+        .dark-mode {
+            background: #222;
+            color: white;
+        }
+
+        .dark-mode .settings-container {
+            background: #333;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #218838;
+        }
+
+        .theme-preview {
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .selected-theme {
+            border: 2px solid #000;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h2>⚙ Settings</h2>
+
+    <div class="settings-container">
+        
+        <div class="setting-item">
+            <span>🌗 Dark Mode</span>
+            <div class="toggle-switch" id="darkModeToggle"></div>
+        </div>
+
+        <div class="setting-item">
+            <span>🔔 Enable Email Notifications</span>
+            <div class="toggle-switch" id="emailToggle"></div>
+        </div>
+
+        <div class="setting-item">
+            <span>📲 Enable SMS Alerts</span>
+            <div class="toggle-switch" id="smsToggle"></div>
+        </div>
+
+        <div class="setting-item">
+            <span>🔐 Private Account</span>
+            <div class="toggle-switch" id="privacyToggle"></div>
+        </div>
+
+        <div class="setting-item">
+            <span>🌍 Language</span>
+            <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+            </select>
+        </div>
+
+        <div class="setting-item">
+            <span>🎨 Theme Color</span>
+            <div>
+                <div class="theme-preview" style="background: #28a745;" onclick="changeTheme('#28a745')"></div>
+                <div class="theme-preview" style="background: #007bff;" onclick="changeTheme('#007bff')"></div>
+                <div class="theme-preview" style="background: #ff5733;" onclick="changeTheme('#ff5733')"></div>
+                <div class="theme-preview" style="background: #6f42c1;" onclick="changeTheme('#6f42c1')"></div>
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <span>🔑 Change Password</span>
+            <input type="password" placeholder="New Password">
+        </div>
+
+        <div class="setting-item">
+            <span>📧 Update Email</span>
+            <input type="email" placeholder="New Email">
+        </div>
+
+        <button class="save-btn" onclick="saveSettings()">💾 Save Changes</button>
+    </div>
+
+    <script>
+        function toggleSwitch(id) {
+            let toggle = document.getElementById(id);
+            toggle.classList.toggle("toggle-on");
+        }
+
+        document.getElementById("darkModeToggle").addEventListener("click", function () {
+            toggleSwitch("darkModeToggle");
+            document.body.classList.toggle("dark-mode");
+        });
+
+        document.getElementById("emailToggle").addEventListener("click", function () {
+            toggleSwitch("emailToggle");
+        });
+
+        document.getElementById("smsToggle").addEventListener("click", function () {
+            toggleSwitch("smsToggle");
+        });
+
+        document.getElementById("privacyToggle").addEventListener("click", function () {
+            toggleSwitch("privacyToggle");
+        });
+
+        function changeTheme(color) {
+            document.body.style.background = color;
+            let themes = document.querySelectorAll('.theme-preview');
+            themes.forEach(theme => theme.classList.remove("selected-theme"));
+            event.target.classList.add("selected-theme");
+        }
+
+        function saveSettings() {
+            alert("✅ Settings Saved!");
+        }
+    </script>
+
+</body>
+</html>

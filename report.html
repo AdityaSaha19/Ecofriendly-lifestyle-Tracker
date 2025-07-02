@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Report | Eco-Friendly Tracker</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #004d00, #008c8c);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 25px rgba(0, 255, 200, 0.5);
+            backdrop-filter: blur(15px);
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFD700;
+        }
+
+        .progress-container {
+            background: #333;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1.5s ease-in-out;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+            color: black;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid black;
+            text-align: left;
+        }
+
+        th {
+            background: #FFA500;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            border: none;
+            color: black;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: linear-gradient(to right, #FFA500, #FF6347);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .dark-mode {
+            background: black;
+            color: white;
+        }
+
+        .dark-mode table {
+            background: black;
+            color: white;
+        }
+
+        .dark-mode th {
+            background: #FF6347;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>📊 Welcome, <span id="username">User</span>! Here's Your Eco Report</h2>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <p>🌱 Your eco-friendly actions are making a difference!</p>
+
+        <!-- Table of Reports -->
+        <input type="text" id="searchInput" placeholder="🔍 Search report..." class="form-control mt-3">
+        <table>
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">📅 Date</th>
+                    <th onclick="sortTable(1)">🏡 Activity</th>
+                    <th onclick="sortTable(2)">🌎 Impact</th>
+                </tr>
+            </thead>
+            <tbody id="reportTable">
+                <tr>
+                    <td>2025-03-07</td>
+                    <td>Recycled 5kg Plastic</td>
+                    <td>✅ Reduced waste</td>
+                </tr>
+                <tr>
+                    <td>2025-03-06</td>
+                    <td>Planted 3 trees</td>
+                    <td>🌳 Air purification</td>
+                </tr>
+                <tr>
+                    <td>2025-03-05</td>
+                    <td>Used public transport</td>
+                    <td>🚆 Lower emissions</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Buttons -->
+        <button class="btn" onclick="increaseProgress()">🎯 Update Progress</button>
+        <button class="btn" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
+    </div>
+
+    <script>
+        // Retrieve username from localStorage
+        document.getElementById("username").textContent = localStorage.getItem("username") || "User";
+
+        // Function to animate progress bar
+        let progress = 30;
+        function increaseProgress() {
+            progress += 10;
+            if (progress > 100) progress = 100;
+            document.getElementById("progressBar").style.width = progress + "%";
+        }
+
+        // Function to sort table
+        function sortTable(columnIndex) {
+            let table = document.getElementById("reportTable");
+            let rows = Array.from(table.rows);
+            let sortedRows = rows.sort((a, b) => a.cells[columnIndex].innerText.localeCompare(b.cells[columnIndex].innerText));
+            table.innerHTML = "";
+            sortedRows.forEach(row => table.appendChild(row));
+        }
+
+        document.getElementById("searchInput").addEventListener("input", function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#reportTable tr");
+
+            rows.forEach(row => {
+                let text = row.innerText.toLowerCase();
+                row.style.display = text.includes(filter) ? "" : "none";
+            });
+        });
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+
+</body>
+</html>

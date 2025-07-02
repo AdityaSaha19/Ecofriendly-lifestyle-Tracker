@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Friendly Tracker & Hospitals</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #E8F5E9;
+            color: #2E7D32;
+            text-align: center;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            padding: 20px;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            width: 250px;
+            background-color: #C8E6C9;
+            color: #2E7D32;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #388E3C;
+        }
+        #map {
+            height: 400px;
+            width: 90%;
+            margin: 10px auto;
+            border-radius: 10px;
+            border: 2px solid #4CAF50;
+        }
+        #stats {
+            margin-top: 15px;
+            font-size: 18px;
+        }
+        #darkModeBtn {
+            background-color: #ffcc00;
+            color: black;
+        }
+        .dark-mode {
+            background-color: #263238;
+            color: #B2DFDB;
+        }
+        .dark-mode .btn {
+            background-color: #81C784;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🌱 Eco-Friendly Tracker & Nearby Hospitals 🌍</h2>
+        <input type="text" id="startLocation" placeholder="Enter Start Location">
+        <input type="text" id="endLocation" placeholder="Enter Destination">
+        <button class="btn" onclick="findRoute()">Find Route</button>
+        <button class="btn" onclick="findHospitals()">Find Hospitals</button>
+        <button class="btn" id="darkModeBtn" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
+
+        <div id="map"></div>
+
+        <div id="stats">
+            <p>🚶 Distance: <span id="distance">0</span> km</p>
+            <p>🌿 CO₂ Saved: <span id="co2Saved">0</span> g</p>
+        </div>
+    </div>
+
+    <script>
+        let map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let startMarker, endMarker, routeLine;
+
+        function findRoute() {
+            let start = document.getElementById("startLocation").value;
+            let end = document.getElementById("endLocation").value;
+
+            Promise.all([
+                fetch(https://nominatim.openstreetmap.org/search?format=json&q=${start}).then(res => res.json()),
+                fetch(https://nominatim.openstreetmap.org/search?format=json&q=${end}).then(res => res.json())
+            ]).then(([startData, endData]) => {
+                if (startData.length > 0 && endData.length > 0) {
+                    let startLat = startData[0].lat, startLon = startData[0].lon;
+                    let endLat = endData[0].lat, endLon = endData[0].lon;
+
+                    if (startMarker) map.removeLayer(startMarker);
+                    if (endMarker) map.removeLayer(endMarker);
+                    if (routeLine) map.removeLayer(routeLine);
+
+                    startMarker = L.marker([startLat, startLon]).addTo(map).bindPopup(📍 Start: ${start}).openPopup();
+                    endMarker = L.marker([endLat, endLon]).addTo(map).bindPopup(📍 Destination: ${end}).openPopup();
+                    
+                    routeLine = L.polyline([[startLat, startLon], [endLat, endLon]], { color: 'green' }).addTo(map);
+                    map.fitBounds([[startLat, startLon], [endLat, endLon]]);
+
+                    let distance = calculateDistance(startLat, startLon, endLat, endLon);
+                    document.getElementById("distance").textContent = distance.toFixed(2);
+                    document.getElementById("co2Saved").textContent = (distance * 21).toFixed(2);
+                } else {
+                    alert("Invalid locations!");
+                }
+            });
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            let dLat = (lat2 - lat1) * Math.PI / 180;
+            let dLon = (lon2 - lon1) * Math.PI / 180;
+            let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function findHospitals() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    let lat = position.coords.latitude;
+                    let lon = position.coords.longitude;
+
+                    map.setView([lat, lon], 14);
+                    L.marker([lat, lon]).addTo(map).bindPopup("📍 You are here").openPopup();
+
+                    fetch(https://overpass-api.de/api/interpreter?data=[out:json];node(around:5000,${lat},${lon})["amenity"="hospital"];out;)
+                        .then(res => res.json())
+                        .then(data => {
+                            data.elements.forEach(hospital => {
+                                L.marker([hospital.lat, hospital.lon]).addTo(map)
+                                    .bindPopup(🏥 ${hospital.tags.name || "Hospital"});
+                            });
+                        });
+
+                    fetch(https://overpass-api.de/api/interpreter?data=[out:json];node(around:5000,${lat},${lon})["amenity"="pharmacy"];out;)
+                        .then(res => res.json())
+                        .then(data => {
+                            data.elements.forEach(store => {
+                                L.marker([store.lat, store.lon]).addTo(map)
+                                    .bindPopup(💊 ${store.tags.name || "Pharmacy"});
+                            });
+                        });
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+
+</body>
+</html>

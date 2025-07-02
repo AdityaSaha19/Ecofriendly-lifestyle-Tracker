@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>🔮 Health Fortune Teller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 30px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            font-size: 28px;
+        }
+        input, select {
+            width: 90%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #ffcc00;
+            color: black;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #ffaa00;
+        }
+        .dark-mode {
+            background: #222;
+            color: white;
+        }
+        .dark-mode .container {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .fortune-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🔮 Health Fortune Teller</h2>
+        <input type="text" id="name" placeholder="Enter Your Name">
+        <input type="number" id="age" placeholder="Enter Your Age">
+        <select id="lifestyle">
+            <option value="active">🏃 Active</option>
+            <option value="moderate">🚶 Moderate</option>
+            <option value="lazy">🛋 Lazy</option>
+        </select>
+        <button onclick="tellFortune()">🔮 Predict My Health</button>
+        <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+
+        <div class="fortune-box" id="fortuneResult"></div>
+    </div>
+
+    <script>
+        function tellFortune() {
+            let name = document.getElementById("name").value;
+            let age = document.getElementById("age").value;
+            let lifestyle = document.getElementById("lifestyle").value;
+            let fortuneText = document.getElementById("fortuneResult");
+
+            if (name === "" || age === "") {
+                fortuneText.innerHTML = "⚠ Please enter all details!";
+                return;
+            }
+
+            let fortunes = {
+                "active": [
+                    "🏃 You will live a long and energetic life! Keep up the great work!",
+                    "💪 Your future is full of strength, but don't forget to rest!",
+                    "🥗 Your body will thank you for your discipline with great health!"
+                ],
+                "moderate": [
+                    "😌 Balance is key! You will have good health if you maintain your routine.",
+                    "🚶 Small changes lead to big results. Stay consistent for a bright future!",
+                    "🧘 A mix of exercise and relaxation will keep you feeling young!"
+                ],
+                "lazy": [
+                    "⚠ Your health needs attention! Try moving more for a better future.",
+                    "🍕 Enjoying life is great, but don't forget to care for your body too!",
+                    "🥤 Too much junk food can slow you down. Stay hydrated and eat well!"
+                ]
+            };
+
+            let randomIndex = Math.floor(Math.random() * fortunes[lifestyle].length);
+            let selectedFortune = fortunes[lifestyle][randomIndex];
+
+            fortuneText.innerHTML = 🔮 Hello ${name}, ${selectedFortune};
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+
+</body>
+</html>

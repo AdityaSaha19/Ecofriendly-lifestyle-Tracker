@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Zone Finder</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #E8F5E9;
+        }
+        #map {
+            height: 450px;
+            width: 90%;
+            margin: 10px auto;
+            border-radius: 10px;
+        }
+        .container {
+            margin: 10px;
+        }
+        button, input {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #4CAF50;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input {
+            width: 250px;
+            border: 1px solid gray;
+        }
+        .safe { background-color: #66BB6A; color: white; }
+        .moderate { background-color: #FFD54F; color: white; }
+        .danger { background-color: #E53935; color: white; }
+        .search { background-color: #2196F3; color: white; }
+        .btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <h2>🌍 Safe Zone Finder</h2>
+
+    <div class="container">
+        <input type="text" id="placeInput" placeholder="Enter a place name">
+        <button class="search" onclick="searchPlace()">🔍 Search</button>
+    </div>
+
+    <div class="container">
+        <button class="safe" onclick="showZones('safe')">✅ Safe Zones</button>
+        <button class="moderate" onclick="showZones('moderate')">⚠ Moderate Zones</button>
+        <button class="danger" onclick="showZones('danger')">❌ Dangerous Zones</button>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        let map = L.map('map').setView([20, 78], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let userMarker, searchMarker;
+        let markers = [];
+        let zoneData = {
+            "safe": [
+                { name: "Eco Park", lat: 28.6129, lon: 77.2295 },
+                { name: "Green Valley", lat: 19.0760, lon: 72.8777 }
+            ],
+            "moderate": [
+                { name: "City Center", lat: 22.5726, lon: 88.3639 },
+                { name: "Main Road", lat: 12.9716, lon: 77.5946 }
+            ],
+            "danger": [
+                { name: "Industrial Zone", lat: 23.0225, lon: 72.5714 },
+                { name: "Chemical Plant", lat: 18.5204, lon: 73.8567 }
+            ]
+        };
+
+        function showZones(type) {
+            clearMarkers();
+            zoneData[type].forEach(zone => {
+                let marker = L.marker([zone.lat, zone.lon]).addTo(map)
+                    .bindPopup(${zone.name} - ${type.toUpperCase()} ZONE).openPopup();
+                markers.push(marker);
+            });
+            speak(type);
+        }
+
+        function clearMarkers() {
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+        }
+
+        function speak(zoneType) {
+            let message = "";
+            if (zoneType === "safe") message = "You are viewing safe zones. These areas are eco-friendly and pollution-free.";
+            if (zoneType === "moderate") message = "You are viewing moderate zones. These areas are somewhat busy but manageable.";
+            if (zoneType === "danger") message = "You are viewing dangerous zones. These places have high pollution or industrial risks.";
+            
+            let speech = new SpeechSynthesisUtterance(message);
+            speech.lang = "en-US";
+            window.speechSynthesis.speak(speech);
+        }
+
+        function showUserLocation(position) {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+            
+            if (userMarker) {
+                map.removeLayer(userMarker);
+            }
+
+            userMarker = L.marker([lat, lon], { title: "You are here!" }).addTo(map)
+                .bindPopup("📍 Your Location").openPopup();
+
+            map.setView([lat, lon], 12);
+        }
+
+        function errorHandler() {
+            alert("Unable to retrieve your location.");
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showUserLocation, errorHandler);
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+
+        function searchPlace() {
+            let place = document.getElementById("placeInput").value;
+            if (!place) {
+                alert("Please enter a place name.");
+                return;
+            }
+
+            fetch(https://nominatim.openstreetmap.org/search?format=json&q=${place})
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        let lat = data[0].lat;
+                        let lon = data[0].lon;
+
+                        if (searchMarker) {
+                            map.removeLayer(searchMarker);
+                        }
+
+                        searchMarker = L.marker([lat, lon], { title: place }).addTo(map)
+                            .bindPopup(📍 ${place}).openPopup();
+
+                        map.setView([lat, lon], 12);
+                    } else {
+                        alert("Location not found. Try another name.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching location:", error);
+                });
+        }
+    </script>
+
+</body>
+</html>

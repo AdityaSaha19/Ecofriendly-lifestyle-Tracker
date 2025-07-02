@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Policies | Eco-Friendly Tracker 🌱</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(to right, #004d00, #008c8c);
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        h2 {
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFD700;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        #searchBox {
+            width: 50%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            text-align: center;
+        }
+
+        .policy-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .policy-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .policy-content {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            text-align: left;
+            color: black;
+        }
+
+        .emoji {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>🌍 Eco-Friendly Policies & Guidelines 📜</h2>
+
+    <div class="search-container">
+        <input type="text" id="searchBox" placeholder="🔍 Search for a policy..." onkeyup="searchPolicies()">
+    </div>
+
+    <div id="policies-container">
+        <div class="policy-card" onclick="togglePolicy(1)">
+            <h3>♻ Recycling Policy</h3>
+            <div class="policy-content" id="policy1">
+                <p>We promote responsible waste disposal by encouraging the use of recyclable materials and reducing plastic waste.</p>
+            </div>
+        </div>
+
+        <div class="policy-card" onclick="togglePolicy(2)">
+            <h3>🌱 Sustainable Energy Use</h3>
+            <div class="policy-content" id="policy2">
+                <p>Our goal is to reduce energy consumption by using renewable energy sources and minimizing carbon footprints.</p>
+            </div>
+        </div>
+
+        <div class="policy-card" onclick="togglePolicy(3)">
+            <h3>🚗 Carpooling & Public Transport</h3>
+            <div class="policy-content" id="policy3">
+                <p>Encouraging employees and users to opt for carpooling or public transport to reduce traffic congestion and pollution.</p>
+            </div>
+        </div>
+
+        <div class="policy-card" onclick="togglePolicy(4)">
+            <h3>🌳 Tree Plantation Initiative</h3>
+            <div class="policy-content" id="policy4">
+                <p>For every milestone achieved, a tree will be planted to contribute to a greener planet.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePolicy(policyId) {
+            var content = document.getElementById("policy" + policyId);
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        }
+
+        function searchPolicies() {
+            let input = document.getElementById("searchBox").value.toLowerCase();
+            let policies = document.querySelectorAll(".policy-card");
+
+            policies.forEach(policy => {
+                let text = policy.innerText.toLowerCase();
+                policy.style.display = text.includes(input) ? "block" : "none";
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login | Eco-Friendly Tracker</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(to right, #004d00, #008c8c);
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .earth-container {
+            position: absolute;
+            width: 450px; 
+            height: 450px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif') no-repeat center;
+            background-size: cover;
+            animation: rotateEarth 12s linear infinite, glowEffect 3s infinite alternate;
+            filter: drop-shadow(0 0 50px #00ff99);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            border-radius: 50%; 
+        }
+
+        @keyframes rotateEarth {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes glowEffect {
+            from { filter: drop-shadow(0 0 30px #00ff99); }
+            to { filter: drop-shadow(0 0 80px #00ff99); }
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 25px rgba(0, 255, 200, 0.5);
+            backdrop-filter: blur(20px);
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            color: #00ffcc;
+            font-size: 26px;
+            text-shadow: 0 0 10px #00ffcc;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message {
+            font-size: 18px;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px #FFD700;
+        }
+
+        input {
+            border-radius: 5px;
+            border: 2px solid #ffffff;
+            padding: 12px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus {
+            border: 2px solid #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            color: #004d00;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            transition: 0.4s;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            cursor: pointer;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(to right, #FFA500, #FF6347);
+            box-shadow: 0 0 20px rgba(255, 165, 0, 1);
+            transform: scale(1.08);
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        #errorMessage {
+            display: none;
+            color: #FFD700;
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .forgot-password {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .forgot-password a {
+            color: #FFD700;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+            color: #FF6347;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="earth-container"></div>
+
+    <div class="login-container">
+        <h2>🌍 Eco-Friendly Tracker</h2>
+        <p class="welcome-message">🌱 Welcome to a Greener Future! Let's make a difference together. 🍃</p>
+        <input type="text" id="username" class="form-control mb-3" placeholder="Enter username">
+        <input type="password" id="password" class="form-control mb-3" placeholder="Enter password">
+        <button class="btn btn-login" onclick="login()">🚀 Login</button>
+        <p id="errorMessage"></p>
+
+        <div class="forgot-password">
+            <a href="#" onclick="forgotPassword()">🔑 Forgot Password?</a>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            const correctUsername = "Yash Raj";
+            const correctPassword = "12345";
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (username === correctUsername && password === correctPassword) {
+                localStorage.setItem("loggedIn", "true");
+                localStorage.setItem("username", username);
+                alert(🌟 Welcome, ${username}! You're now logged in.);
+                window.location.href = "index.html";
+            } else {
+                errorMessage.textContent = "❌ Oops! Invalid username or password!";
+                errorMessage.style.display = "block";
+            }
+        }
+
+        function forgotPassword() {
+            alert("🔑 Need help? Contact support or follow the password recovery steps.");
+        }
+    </script>
+
+</body>
+</html>
